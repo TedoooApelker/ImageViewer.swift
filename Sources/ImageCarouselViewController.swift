@@ -89,6 +89,7 @@ class ImageCarouselViewController:UIPageViewController, ImageViewerTransitionVie
             target: self,
             action: #selector(dismiss(_:)))
         
+        navBar.tintColor = .black
         navItem.leftBarButtonItem = closeBarButton
         navItem.leftBarButtonItem?.tintColor = theme.tintColor
         navBar.alpha = 0.0
@@ -129,6 +130,8 @@ class ImageCarouselViewController:UIPageViewController, ImageViewerTransitionVie
         }
     }
     
+    var listener: [ImageViewerListener] = []
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
         
@@ -141,7 +144,7 @@ class ImageCarouselViewController:UIPageViewController, ImageViewerTransitionVie
         if let imageDatasource = imageDatasource {
             let initialVC:ImageViewerController = .init(
                 index: initialIndex,
-                imageItem: imageDatasource.imageItem(at: initialIndex))
+                imageItem: imageDatasource.imageItem(at: initialIndex), items: self.listener)
             setViewControllers([initialVC], direction: .forward, animated: true)
         }
     }
@@ -192,7 +195,7 @@ extension ImageCarouselViewController:UIPageViewControllerDataSource {
         let newIndex = vc.index - 1
         return ImageViewerController.init(
             index: newIndex,
-            imageItem:  imageDatasource.imageItem(at: newIndex))
+            imageItem:  imageDatasource.imageItem(at: newIndex), items: listener)
     }
     
     public func pageViewController(
@@ -206,6 +209,6 @@ extension ImageCarouselViewController:UIPageViewControllerDataSource {
         let newIndex = vc.index + 1
         return ImageViewerController.init(
             index: newIndex,
-            imageItem: imageDatasource.imageItem(at: newIndex))
+            imageItem: imageDatasource.imageItem(at: newIndex), items: listener)
     }
 }

@@ -8,6 +8,7 @@ extension UIImageView {
         var imageDatasource:ImageDataSource?
         var initialIndex:Int = 0
         var options:[ImageViewerOption] = []
+        var listener: [ImageViewerListener] = []
     }
     
     private var vc:UIViewController? {
@@ -18,11 +19,12 @@ extension UIImageView {
     
     public func setupImageViewer(
         options:[ImageViewerOption] = [],
-        from:UIViewController? = nil) {
+        from:UIViewController? = nil,
+        withListener: [ImageViewerListener] = []) {
         setup(
             datasource: SimpleImageDatasource(imageItems: [.image(image)]),
             options: options,
-            from: from)
+            from: from, withListener: withListener)
     }
     
     #if canImport(SDWebImage)
@@ -31,7 +33,8 @@ extension UIImageView {
         initialIndex:Int = 0,
         placeholder: UIImage? = nil,
         options:[ImageViewerOption] = [],
-        from:UIViewController? = nil) {
+        from:UIViewController? = nil,
+        withListener: [ImageViewerListener] = []) {
         
         let datasource = SimpleImageDatasource(
             imageItems: [url].compactMap {
@@ -41,7 +44,7 @@ extension UIImageView {
             datasource: datasource,
             initialIndex: initialIndex,
             options: options,
-            from: from)
+            from: from, withListener: withListener)
     }
     #endif
     
@@ -49,7 +52,8 @@ extension UIImageView {
         images:[UIImage],
         initialIndex:Int = 0,
         options:[ImageViewerOption] = [],
-        from:UIViewController? = nil) {
+        from:UIViewController? = nil,
+        withListener: [ImageViewerListener] = []) {
         
         let datasource = SimpleImageDatasource(
             imageItems: images.compactMap {
@@ -59,8 +63,9 @@ extension UIImageView {
             datasource: datasource,
             initialIndex: initialIndex,
             options: options,
-            from: from)
+            from: from, withListener: withListener)
     }
+    
     
     #if canImport(SDWebImage)
     public func setupImageViewer(
@@ -68,7 +73,10 @@ extension UIImageView {
         initialIndex:Int = 0,
         options:[ImageViewerOption] = [],
         placeholder: UIImage? = nil,
-        from:UIViewController? = nil) {
+        from:UIViewController? = nil,
+        withListener: [ImageViewerListener] = []
+        ) {
+        
         
         let datasource = SimpleImageDatasource(
             imageItems: urls.compactMap {
@@ -78,7 +86,7 @@ extension UIImageView {
             datasource: datasource,
             initialIndex: initialIndex,
             options: options,
-            from: from)
+            from: from, withListener: withListener)
     }
     #endif
     
@@ -86,20 +94,24 @@ extension UIImageView {
         datasource:ImageDataSource,
         initialIndex:Int = 0,
         options:[ImageViewerOption] = [],
-        from:UIViewController? = nil) {
+        from:UIViewController? = nil,
+        withListener: [ImageViewerListener] = [])
+    {
         
         setup(
             datasource: datasource,
             initialIndex: initialIndex,
             options: options,
-            from: from)
+            from: from, withListener: withListener)
     }
     
     private func setup(
         datasource:ImageDataSource?,
         initialIndex:Int = 0,
         options:[ImageViewerOption] = [],
-        from: UIViewController? = nil) {
+        from: UIViewController? = nil,
+        withListener: [ImageViewerListener] = []
+) {
         
         var _tapRecognizer:TapWithDataRecognizer?
         gestureRecognizers?.forEach {
@@ -120,6 +132,7 @@ extension UIImageView {
             _tapRecognizer!.numberOfTapsRequired = 1
         }
         // Pass the Data
+        _tapRecognizer!.listener = withListener
         _tapRecognizer!.imageDatasource = datasource
         _tapRecognizer!.initialIndex = initialIndex
         _tapRecognizer!.options = options
@@ -135,6 +148,7 @@ extension UIImageView {
             imageDataSource: sender.imageDatasource,
             options: sender.options,
             initialIndex: sender.initialIndex)
+        imageCarousel.listener = sender.listener
         let presentFromVC = sender.from ?? vc
         presentFromVC?.present(imageCarousel, animated: true)
     }
