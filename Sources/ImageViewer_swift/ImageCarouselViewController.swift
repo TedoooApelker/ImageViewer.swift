@@ -92,6 +92,7 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
             target: self,
             action: #selector(dismiss(_:)))
         
+        navBar.tintColor = .black
         navItem.leftBarButtonItem = closeBarButton
         navItem.leftBarButtonItem?.tintColor = theme.tintColor
         navBar.alpha = 0.0
@@ -131,6 +132,8 @@ public class ImageCarouselViewController:UIPageViewController, ImageViewerTransi
             }
         }
     }
+    
+    var listener: [ImageViewerListener] = []
     
     override public func viewDidLoad() {
         super.viewDidLoad()

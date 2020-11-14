@@ -1,5 +1,7 @@
 import UIKit
 
+public typealias ImageViewerListener = (String, ((UIViewController, UIImage?) -> ())?)
+
 class ImageViewerController:UIViewController,
 UIGestureRecognizerDelegate {
     
@@ -32,6 +34,7 @@ UIGestureRecognizerDelegate {
     private var lastLocation:CGPoint = .zero
     private var isAnimating:Bool = false
     private var maxZoomScale:CGFloat = 1.0
+    private var items: [ImageViewerListener]
     
     init(
         index: Int,
@@ -73,7 +76,7 @@ UIGestureRecognizerDelegate {
         leading = imageView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor)
         trailing = scrollView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor)
         bottom = scrollView.bottomAnchor.constraint(equalTo: imageView.bottomAnchor)
-        
+               
         top.isActive = true
         leading.isActive = true
         trailing.isActive = true
@@ -136,6 +139,9 @@ UIGestureRecognizerDelegate {
         pinchRecognizer.numberOfTouchesRequired = 2
         scrollView.addGestureRecognizer(pinchRecognizer)
         
+        let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTapped(_:)))
+        scrollView.addGestureRecognizer(longTapGesture)
+        
         let singleTapGesture = UITapGestureRecognizer(
             target: self, action: #selector(didSingleTap(_:)))
         singleTapGesture.numberOfTapsRequired = 1
@@ -149,6 +155,22 @@ UIGestureRecognizerDelegate {
         scrollView.addGestureRecognizer(doubleTapRecognizer)
         
         singleTapGesture.require(toFail: doubleTapRecognizer)
+    }
+    
+    @objc private func longTapped(_ gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            if items.isEmpty {
+                return
+            }
+            let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+            items.forEach { (item) in
+                alert.addAction(UIAlertAction(title: item.0, style: .default, handler: { [weak self] (_) in
+                    guard let self = self else { return }
+                    item.1?(self, self.imageView.image)
+                }))
+            }
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     @objc

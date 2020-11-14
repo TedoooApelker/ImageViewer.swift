@@ -9,6 +9,7 @@ extension UIImageView {
         var imageLoader:ImageLoader?
         var initialIndex:Int = 0
         var options:[ImageViewerOption] = []
+        var listener: [ImageViewerListener] = []
     }
     
     private var vc:UIViewController? {
@@ -128,6 +129,7 @@ extension UIImageView {
             _tapRecognizer!.numberOfTapsRequired = 1
         }
         // Pass the Data
+        _tapRecognizer!.listener = withListener
         _tapRecognizer!.imageDatasource = datasource
         _tapRecognizer!.imageLoader = imageLoader
         _tapRecognizer!.initialIndex = initialIndex
@@ -145,6 +147,7 @@ extension UIImageView {
             imageLoader: sender.imageLoader ?? URLSessionImageLoader(),
             options: sender.options,
             initialIndex: sender.initialIndex)
+        imageCarousel.listener = sender.listener
         let presentFromVC = sender.from ?? vc
         presentFromVC?.present(imageCarousel, animated: true)
     }
