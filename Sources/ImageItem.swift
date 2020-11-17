@@ -2,7 +2,7 @@ import UIKit
 
 public enum ImageItem {
     case image(UIImage?)
-    #if canImport(SDWebImage)
+    #if canImport(Kingfisher)
     case url(URL, placeholder: UIImage?)
     #endif
 }

@@ -1,6 +1,6 @@
 import UIKit
-#if canImport(SDWebImage)
-import SDWebImage
+#if canImport(Kingfisher)
+import Kingfisher
 #endif
 
 public typealias ImageViewerListener = (String, ((UIViewController, UIImage?) -> ())?)
@@ -95,6 +95,7 @@ UIGestureRecognizerDelegate {
             imageView.layoutIfNeeded()
             #if canImport(SDWebImage)
         case .url(let url, let placeholder):
+            
             imageView.sd_setImage(
                 with: url,
                 placeholderImage: placeholder,
