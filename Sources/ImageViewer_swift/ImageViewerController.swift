@@ -1,4 +1,7 @@
 import UIKit
+#if canImport(Kingfisher)
+import Kingfisher
+#endif
 
 public typealias ImageViewerListener = (String, ((UIViewController, UIImage?) -> ())?)
 
