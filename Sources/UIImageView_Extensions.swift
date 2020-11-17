@@ -27,7 +27,7 @@ extension UIImageView {
             from: from, withListener: withListener)
     }
     
-    #if canImport(SDWebImage)
+    #if canImport(Kingfisher)
     public func setupImageViewer(
         url:URL,
         initialIndex:Int = 0,
@@ -67,7 +67,7 @@ extension UIImageView {
     }
     
     
-    #if canImport(SDWebImage)
+    #if canImport(Kingfisher)
     public func setupImageViewer(
         urls:[URL],
         initialIndex:Int = 0,

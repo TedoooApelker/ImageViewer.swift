@@ -93,18 +93,19 @@ UIGestureRecognizerDelegate {
         case .image(let img):
             imageView.image = img
             imageView.layoutIfNeeded()
-            #if canImport(SDWebImage)
+            #if canImport(Kingfisher)
         case .url(let url, let placeholder):
-            
-            imageView.sd_setImage(
-                with: url,
-                placeholderImage: placeholder,
-                options: [],
-                progress: nil) {(img, err, type, url) in
-                    DispatchQueue.main.async {[weak self] in
-                        self?.layout()
-                    }
-            }
+            imageView.kf.indicatorType = .activity
+            imageView.kf.setImage(with: url)
+//            imageView.sd_setImage(
+//                with: url,
+//                placeholderImage: placeholder,
+//                options: [],
+//                progress: nil) {(img, err, type, url) in
+//                    DispatchQueue.main.async {[weak self] in
+//                        self?.layout()
+//                    }
+//            }
             #endif
         default:
             break
