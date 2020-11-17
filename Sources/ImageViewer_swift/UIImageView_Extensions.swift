@@ -28,7 +28,8 @@ extension UIImageView {
             from: from,
             imageLoader: imageLoader)
     }
-
+    
+    #if canImport(Kingfisher)
     public func setupImageViewer(
         url:URL,
         initialIndex:Int = 0,
@@ -67,7 +68,9 @@ extension UIImageView {
             from: from,
             imageLoader: imageLoader)
     }
-
+    
+    
+    #if canImport(Kingfisher)
     public func setupImageViewer(
         urls:[URL],
         initialIndex:Int = 0,
