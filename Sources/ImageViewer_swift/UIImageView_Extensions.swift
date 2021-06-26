@@ -51,6 +51,32 @@ extension UIImageView {
     }
     
     public func setupImageViewer(
+        urls:[URL],
+        initialIndex:Int = 0,
+        options:[ImageViewerOption] = [],
+        placeholder: UIImage? = nil,
+        from:UIViewController? = nil,
+        imageLoader:ImageLoader? = nil,
+        withListener: [ImageViewerListener] = []
+        ) {
+        
+        let datasource = SimpleImageDatasource(
+            imageItems: urls.compactMap {
+                ImageItem.url($0, placeholder: placeholder)
+        })
+        setup(
+            datasource: datasource,
+            initialIndex: initialIndex,
+            options: options,
+            from: from,
+            imageLoader: imageLoader,
+            withListener: withListener
+            )
+    }
+
+    #endif
+
+    public func setupImageViewer(
         images:[UIImage],
         initialIndex:Int = 0,
         options:[ImageViewerOption] = [],
@@ -69,27 +95,6 @@ extension UIImageView {
             imageLoader: imageLoader)
     }
     
-    
-    #if canImport(Kingfisher)
-    public func setupImageViewer(
-        urls:[URL],
-        initialIndex:Int = 0,
-        options:[ImageViewerOption] = [],
-        placeholder: UIImage? = nil,
-        from:UIViewController? = nil,
-        imageLoader:ImageLoader? = nil) {
-        
-        let datasource = SimpleImageDatasource(
-            imageItems: urls.compactMap {
-                ImageItem.url($0, placeholder: placeholder)
-        })
-        setup(
-            datasource: datasource,
-            initialIndex: initialIndex,
-            options: options,
-            from: from,
-            imageLoader: imageLoader)
-    }
     
     public func setupImageViewer(
         datasource:ImageDataSource,
@@ -111,7 +116,9 @@ extension UIImageView {
         initialIndex:Int = 0,
         options:[ImageViewerOption] = [],
         from: UIViewController? = nil,
-        imageLoader:ImageLoader? = nil) {
+        imageLoader:ImageLoader? = nil,
+        withListener: [ImageViewerListener] = []
+        ) {
         
         var _tapRecognizer:TapWithDataRecognizer?
         gestureRecognizers?.forEach {
